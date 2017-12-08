@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    __title__ = 'Remove File Set Config'
+    __author__ = 'Tx'
+    __mtime__ = '2017-10-19'
+
+    FileSize:
+        enable 使能标识：
+        unit   大小单位： M, G, KB
+    FileTime:
+        enable 使能标识：
+        unit   时间单位： D, M, Y (日, 月, 年)
+-->
+<APT_Fileconfg>
+    <RmFConfig>
+        <FileSize enable="1" unit="kb">1024</FileSize>
+        <FileTime enable="1" unit="d">3</FileTime>
+    </RmFConfig>
+</APT_Fileconfg>
