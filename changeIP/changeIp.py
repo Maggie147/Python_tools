@@ -40,9 +40,13 @@ def Int2n_EXChange(h_ip):
 def N2int_EXChange(ip_string):
     temp = socket.inet_aton(ip_string)
     print temp
-    ip_int = socket.ntohl(struct.unpack("i", socket.inet_aton(ip_string))[0]) 
+    ip_int = socket.ntohl(struct.unpack("i", socket.inet_aton(ip_string))[0])
     # ip_int = struct.unpack("!I", socket.inet_aton(ip_string))[0]
     print ip_int
+
+def iphebo(ip):
+    packedIP = socket.inet_aton(ip)
+    return struct.unpack('!L',packedIP)[0]
 
 
 def test_int2n():
@@ -53,10 +57,13 @@ def test_int2n():
 
 
 def test_n2int():
-    ip_string = "192.168.6.101"
+    ip_string = "192.168.6.135"
     ip_int = N2int_EXChange(ip_string)
     # print ip_int
-
+    # int_ip = 3736862297
+    int_ip = 3232237191
+    ip = socket.inet_ntoa(struct.pack('I',socket.htonl(int_ip)))
+    print ip
 
 def main():
     # test_int2n()
