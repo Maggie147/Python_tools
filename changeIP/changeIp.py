@@ -40,8 +40,8 @@ def Int2n_EXChange(h_ip):
 def N2int_EXChange(ip_string):
     temp = socket.inet_aton(ip_string)
     print temp
-    ip_int = socket.ntohl(struct.unpack("i", socket.inet_aton(ip_string))[0])
-    # ip_int = struct.unpack("!I", socket.inet_aton(ip_string))[0]
+    # ip_int = socket.ntohl(struct.unpack("i", socket.inet_aton(ip_string))[0])
+    ip_int = struct.unpack("!I", socket.inet_aton(ip_string))[0]
     print ip_int
 
 def iphebo(ip):
