@@ -3,7 +3,7 @@
 #================================================
 #  __title__ = 'mysql_tools'
 #  __author__ = 'tx'
-#  __mtime__ = '2017-12-12'
+#  __mtime__ = '2017-12-19'
 #=================================================
 #
 import MySQLdb
@@ -15,7 +15,6 @@ import xml.etree.ElementTree as ET
 # from xml.etree import ElementTree
 import sys,time,os
 # sys.path.append('./pylib/')
-import storageclient
 
 reload(sys)
 sys.setdefaultencoding('utf8')
