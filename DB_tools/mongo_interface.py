@@ -1,10 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-  
+# -*- coding: utf-8 -*-
 '''
     @File        mongo_interface.py
-    @Author      pengsen cheng
-    @Company     bhyc
-    @CreatedDate 2015-06-18
+    @CreatedDate
 '''
 import sys, os
 dir = os.path.realpath(__file__)
@@ -14,7 +12,7 @@ sys.path.append(dir)
 
 from storage import datastruct, opcode
 from MongoConnector import MongoConnector
-from MongoBuilder import MongoBuilder 
+from MongoBuilder import MongoBuilder
 import socket, struct, pymongo, ctypes
 from storage.tools.MyLog import MyLog
 #from storage.tools.Redis import Redis
@@ -39,18 +37,18 @@ def insert_into_mongo(data):
 #         redis = Redis()
 #         if redis.isexist(md5) is True:
 #             return opcode.DO_ERROR_RKEY
-# 
+#
 #         redis.set(md5, seconds)
         mc = MemCache()
         if mc.isexist(md5) is True:
             return opcode.DO_ERROR_RKEY
- 
+
         mc.set(md5, seconds)
 
     bson = {}
     builder.build_insert_bson(data, bson)
     #print builder.get_collection_name(), bson
-    
+
     now = 0;
     if bson.has_key('H010014') is True:
         now = bson['H010014']
@@ -95,7 +93,7 @@ def bind_account_mongo(ip, port, mac_in_package, auth_type):
 
     connector = MongoConnector()
     tag, cursor = connector.find(query, None, "TAccount_M")
-    
+
     if tag == opcode.DO_OK:
         tag = opcode.DO_UNSUCCESS
         try:
@@ -107,8 +105,8 @@ def bind_account_mongo(ip, port, mac_in_package, auth_type):
             log = MyLog()
             log.write('ERROR: %s\n', str(e))
             tag = opcode.DO_ERROR_UN
-            
-    return tag, Account, Mac 
+
+    return tag, Account, Mac
 
 def bind_address_mongo(Account):
     query = {}
@@ -117,7 +115,7 @@ def bind_address_mongo(Account):
     gisinfo = datastruct.GisInfo()
     connector = MongoConnector()
     tag, cursor = connector.find(query, None, "TAddress_M");
-    
+
     if tag == opcode.DO_OK:
         tag = opcode.DO_UNSUCCESS
         try:
@@ -136,7 +134,7 @@ def bind_address_mongo(Account):
             log = MyLog()
             log.write('ERROR: %s\n', str(e))
             tag = opcode.DO_ERROR_UN
-        
+
     return tag, gisinfo
 
 def bind_ipaddress_mongo(Account):
@@ -148,7 +146,7 @@ def bind_ipaddress_mongo(Account):
     eport = None
     connector = MongoConnector()
     tag, cursor = connector.find(query, None, "TAccount_M");
-    
+
     if tag == opcode.DO_OK:
        tag = opcode.DO_UNSUCCESS
        try:
@@ -161,13 +159,13 @@ def bind_ipaddress_mongo(Account):
            log = MyLog()
            log.write('ERROR: %s\n', str(e))
            tag = opcode.DO_ERROR_UN
-    
-    return tag, ip, bport, eport 
+
+    return tag, ip, bport, eport
 
 def find_from_mongo(query, field, collection_name):
     connector = MongoConnector()
     tag, cursor = connector.find(query, field, collection_name)
-    
+
     dataset = []
     if tag == opcode.DO_OK:
         try:
@@ -178,5 +176,5 @@ def find_from_mongo(query, field, collection_name):
             log.write('ERROR: %s\n', str(e))
             tag = opcode.DO_ERROR_UN
             dataset = []
-    
+
     return tag, dataset
