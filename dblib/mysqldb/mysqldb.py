@@ -5,7 +5,6 @@ mysql_tools.py
 @Created On 2018-02-15
 @Updated On 2018-02-15
 @Author: tx
-
 '''
 import MySQLdb
 import xml.etree.ElementTree as ET
@@ -19,13 +18,9 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-xmlpath = './conf/SysSet.xml'
-
 
 class SqlConnector(object):
-    def __init__(self):
-        conffile = xmlpath
-
+    def __init__(self, conffile):
         self.readconfig(conffile)
         self.connectmysql()
 
@@ -132,19 +127,21 @@ def insert_test(cur, conn, table_name, info):
         # print sql
         cur.execute(sql)
         conn.commit()
+        print "'%s' success"%sql
     except MySQLdb.Error, e:
-        print "sql: ", sql
+        print "'%s' failed!!!"%sql
         print e
 
 
 def test():
-    Mysql = SqlConnector()
+    xmlpath = './conf/SysSet.xml'
+    Mysql = SqlConnector(xmlpath)
 
     TestTable = "TestTable"
 
-    for i in range(1, 10):
-        insertInfo = {'Num':str(i), 'Time':int(time.time())}
-        insert_test(Mysql.cursor, Mysql.conn, TestTable, insertInfo)
+    # for i in range(1, 10):
+    #     insertInfo = {'Num':str(i), 'Time':int(time.time())}
+    #     insert_test(Mysql.cursor, Mysql.conn, TestTable, insertInfo)
 
     result = Mysql.find_one(TestTable, 'Num', '5')
     print result
