@@ -18,8 +18,7 @@ sys.setdefaultencoding("utf-8")
 
 
 class MongoConnector(object):
-    def __init__(self):
-        conffile = './conf/SysSet.xml'
+    def __init__(self, conffile):
         tree = ElementTree.ElementTree(file = conffile)
         root = tree.getroot()
         node = root.find('database')
@@ -191,7 +190,9 @@ def findPrint_test(mydb, collection_name):
 
 
 if __name__ == '__main__':
-    Mydb = MongoConnector()
+    conffile = './conf/SysSet.xml'
+
+    Mydb = MongoConnector(conffile)
 
     TestTable = "TestTable"
 
