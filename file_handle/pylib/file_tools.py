@@ -2,7 +2,7 @@
 #================================================
 #  __title__ = 'file_fun'
 #  __author__ = 'tx'
-#  __mtime__ = '2017-12-08'
+#  __mtime__ = '2018-01-30'
 #=================================================
 import os
 import sys
@@ -84,17 +84,51 @@ def get_fileList(file_dir, tail='.txt'):
     return file_path
 
 
-def write_date_2file(path, fname, data,):
+def get_file(filepath, rmflag=0):
+    filebuf = None
+    try:
+        with open(filepath, "rb+") as fp:
+            filebuf = fp.read()
+        try:
+            if rmflag == 1:
+                os.remove(filepath)
+        except Exception as e:
+            print e
+    except Exception as e:
+        print "Open file [%s] failed!!!" % filepath
+    return filebuf
+
+
+def write_date_2file(path, fname, data):
     if not os.path.exists(path):
         os.makedirs(path)
     try:
         with open(path+fname, "wb") as f:
             fp.write(data)
+        return True
     except:
         return False
-    return True
-
-
+    
+def get_data(buf, head_str='', tail_str=''):
+    result_buf = ''
+    try:
+        begin = buf.rfind(head_str)
+        if begin:
+            if tail_str:
+                end = buf[begin+len(head_str):].find(tail_str)
+                if end:
+                    result_buf = buf[begin+len(head_str): begin+len(head_str)+end]
+                else:
+                    result_buf = buf[begin+len(head_str): ]
+            else:
+                result_buf = buf[begin+len(head_str):]
+        else:
+            print "no find head_str"
+    except Exception as e:
+        print e
+    return result_buf
+ 
+    
 def get_fileSize(fpath, unit='KB'):
     '''
 get file szie, return default szie unit is KB, rounded to 3 decimal places.
