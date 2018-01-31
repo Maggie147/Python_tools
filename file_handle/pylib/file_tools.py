@@ -30,14 +30,17 @@ def get_file_md5(fpath):
     '''
     try:
         # 需要使用二进制格式读取文件内容
-        fp = open(fpath, 'rb')
-        data = fp.read()
-        fp.close()
+        with open(fpath, 'rb') as fp:
+            data = fp.read()
+        hashObj = hashlib.md5()
+        # import md5
+        # md5Obj = md5.new()
+        # md5Obj.update(data)
+        hashObj.update(data)
+        return hashObj.hexdigest()
     except:
         return None
-    hashObj = hashlib.md5()
-    hashObj.update(data)
-    return hashObj.hexdigest()
+
 
 
 def cpfile(srcfpath, tarfpath):
