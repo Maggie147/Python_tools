@@ -1,0 +1,1 @@
+sort ip.txt > a.txt
