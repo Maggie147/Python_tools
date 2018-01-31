@@ -1,0 +1,85 @@
+binascii 模块  
+作用：二进制和ASCII码互相转换。
+
+字符串转ASCII码对应的十六进制
+>>> s = 'hello'
+>>> b = binascii.b2a_hex(s)
+>>> print b
+68656c6c6f
+
+binascii.b2a_hex()
+binascii.hexlify（）
+
+
+ASCII码对应的十六进制转字符串
+>>> c = binascii.a2b_hex(b)
+>>> print c
+hello
+
+binascii.a2b_hex()
+binascii.unhexlify（）
+
+
+注意：hexlify和内置函数hex的区别， hex仅仅转换整数（逆向可使用int）， 使用字符串做参数会报错。
+int([x[,base]]) base默认是十进制，可以取[2,36]
+
+
+
+函数列表：
+binascii.a2b_uu(string)
+
+binascii.b2a_uu(data)
+
+binascii.a2b_base64(string)
+
+binascii.b2a_base64(data)
+
+binascii.a2b_qp(string[, header])
+
+binascii.b2a_qp(data[, quotetabs, istext, header])
+
+binascii.a2b_hqx(string)
+
+binascii.rledecode_hqx(data)
+
+binascii.rlecode_hqx(data)
+
+binascii.b2a_hqx(data)
+
+binascii.crc_hqx(data, crc)
+
+binascii.crc32(data[, crc])
+
+binascii.b2a_hex(data)
+
+binascii.b2a_hex(data)
+
+binascii.hexlify(data)
+
+binascii.a2b_hex(hexstr)
+
+binascii.unhexlify(hexstr)
+
+ord():把ASCII码表中的字符转换成对应的整形
+chr():把一个整形转换成ASCII码表中对应的单个字符
+unichr（）
+bin():把十进制整形转换成二进制字符
+oct():把十进制转换成八进制字符
+
+相关模块：
+
+Module base64
+
+Support for base64 encoding used inMIME email messages.
+
+Module binhexwww.2cto.com
+
+Support for the binhex format used onthe Macintosh.
+
+Module uu
+
+Support for UU encoding used on Unix.
+
+Module quopri
+
+Support for quoted-printable encodingused in MIME email messages.
