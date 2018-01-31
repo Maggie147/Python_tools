@@ -1,0 +1,20 @@
+yum -y update
+yum  install gcc libffi-devel openssl-devel libxml2 libxslt-devel libxml2-devel python-devel zlib-dev bzip2-devel wget sqlite-devel -y
+yum groupinstall -y development
+
+
+
+/c de***********
+yum install gcc gcc-c++
+yum install mysql-devel -y
+
+°²×°pcre
+yum install pcre-devel
+
+yum install libncurses5-dev libncursesw5-dev
+yum install libncurses5-dev 
+
+tar zxvf libxml2-2.7.4.tar.gz 
+cd libxml2-2.7.4
+./configure 
+*************/
