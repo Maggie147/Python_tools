@@ -1,19 +1,20 @@
 # -*- encoding: utf-8-*-
-#================================================
-#  __title__ = 'file_fun'
-#  __author__ = 'tx'
-#  __mtime__ = '2018-01-30'
-#=================================================
+'''
+    @File        File Handle
+    @Author      tx
+    @CreatedDate 2018-04-02
+    @UpdatedDate 2018-04-12
+'''
+# py3 = True if sys.version > '3' else False
 import os
 import sys
 import time
-import hashlib
-import shutil
-sys.path.append("./")
-from time_tools import TimeStampToTime
+pwd = os.path.dirname(os.path.realpath(__file__))       #pwd2 = sys.path[0]
+pardir = os.path.abspath(os.path.join(pwd, os.pardir))
+sys.path.append(pardir)
 
 reload(sys)
-sys.setdefaultencoding('utf-8')
+sys.setdefaultencoding('utf8')
 
 g_iDEBUG = 1
 def DEBUG(*value):
@@ -25,121 +26,130 @@ def DEBUG(*value):
             print i,
         print ""
 
-def get_file_md5(fpath):
-    '''以文件路径作为参数，返回对文件md5后的值
-    '''
+# get_fileList
+def get_files(path, tail=None):
     try:
-        # 需要使用二进制格式读取文件内容
-        with open(fpath, 'rb') as fp:
-            data = fp.read()
-        hashObj = hashlib.md5()
-        # import md5
-        # md5Obj = md5.new()
-        # md5Obj.update(data)
-        hashObj.update(data)
-        return hashObj.hexdigest()
-    except:
+        files=[]
+        if not os.path.exists(path):
+            return None
+        for dirpath, dirnames, filenames in os.walk(path):
+            if len(filenames)==0:
+                continue
+            for file in filenames:
+                if tail:
+                    if tail != os.path.splitext(file)[1]:
+                        continue
+                fullpath = os.path.join(dirpath, file)
+                files.append(fullpath)
+        return files
+    except Exception as e:
+        print(e)
         return None
 
+def _isExsit(path, fname):
+    try:
+        fullpath = os.path.join(path, fname)
+        if not os.path.isfile(fullpath):
+            return False
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
+def rmfile(path, fname):
+    try:
+        fullpath = os.path.join(path, fname)
+        os.remove(fullpath)
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
 def cpfile(srcfpath, tarfpath):
     try:
+        import shutil
+        if not os.path.isfile(srcfpath):
+            print("File: [{}] Not exsit".format(srcfpath))
         shutil.copy(srcfpath, tarfpath)
+        # os.system("cp -f {} {}".format(srcfpath, tarfpath))
         return True
-    except:
-        return False
-
-
-def rmfile(fpath, flag=1):
-    if flag:
-        try:
-            if fpath != "NULL":
-                os.remove(fpath)
-        except:
-            return False
-        return True
-    else:
-        return False
-
-
-def get_fileList(file_dir, tail='.txt'):
-    file_path=[]
-    # file_name=[]
-    fpath = file_dir.strip()
-    ftail = tail.strip()
-
-    if not os.path.exists(fpath):
-        return None
-    for value1, value2, value3 in os.walk(fpath):
-        # print "value1: ", value1
-        # print "value2: ", value2
-        # print "value3: ", value3
-        if len(value3)==0:
-            continue
-        for filename in value3:
-            if ftail != os.path.splitext(filename)[1]:
-                continue
-            # file_path.append(value1)
-            # file_name.append(i)
-            file_path.append(value1+'/'+filename)
-    # return file_path, file_name
-    return file_path
-
-
-def get_file(filepath, rmflag=0):
-    filebuf = None
-    try:
-        with open(filepath, "rb+") as fp:
-            filebuf = fp.read()
-        try:
-            if rmflag == 1:
-                os.remove(filepath)
-        except Exception as e:
-            print e
     except Exception as e:
-        print "Open file [%s] failed!!!" % filepath
-    return filebuf
+        print(e)
+        return False
+
+# get_file
+def get_file_data(path, fname, mode="rb"):
+    try:
+        fullpath = os.path.join(path, fname)
+        with open(fullpath, mode) as fp:
+            fbuf = fp.read()
+        return fbuf
+    except Exception as e:
+        print(e)
+        return False
 
 
-def write_date_2file(path, fname, data):
+def get_file_md5(path, fname, mode='1'):
+    try:
+        # 需要使用二进制格式读取文件内容
+        buf = get_file_data(path, fname, mode="rb")
+        if not buf:
+            print("File[%s] open failed."%fname)
+
+        if mode == '1':
+            import md5
+            md5Obj = md5.new()
+            md5Obj.update(buf)
+        else:
+            import hashlib
+            md5Obj = hashlib.md5()
+            md5Obj.update(buf)
+        return md5Obj.hexdigest()
+    except Exception as e:
+        print(e)
+        return None
+
+
+def write_date_2file(path, fname, buf):
     if not os.path.exists(path):
         os.makedirs(path)
     try:
-        with open(path+fname, "wb") as f:
-            fp.write(data)
+        fullpath = os.path.join(path, fname)
+        with open(fullpath, "wb") as fp:
+            fp.write(buf)
         return True
-    except:
-        return False
-    
-def get_data(buf, head_str='', tail_str=''):
-    result_buf = ''
-    try:
-        begin = buf.rfind(head_str)
-        if begin:
-            if tail_str:
-                end = buf[begin+len(head_str):].find(tail_str)
-                if end:
-                    result_buf = buf[begin+len(head_str): begin+len(head_str)+end]
-                else:
-                    result_buf = buf[begin+len(head_str): ]
-            else:
-                result_buf = buf[begin+len(head_str):]
-        else:
-            print "no find head_str"
     except Exception as e:
-        print e
-    return result_buf
- 
-    
-def get_fileSize(fpath, unit='KB'):
-    '''
-get file szie, return default szie unit is KB, rounded to 3 decimal places.
-    '''
+        return False
+
+
+# get_data
+def get_symbol_value(buf, head_sym='', tail_sym=''):
+    value = ''
     try:
-        # fpath = unicode(fpath, 'utf8')
+        begin = buf.rfind(head_sym)
+        if begin:
+            if tail_sym:
+                end = buf[begin+len(head_sym):].find(tail_sym)
+                if end:
+                    value = buf[begin+len(head_sym): begin+len(head_sym)+end]
+                else:
+                    value = buf[begin+len(head_sym): ]
+            else:
+                value = buf[begin+len(head_sym):]
+        else:
+            print("Not Found head symbol")
+    except Exception as e:
+        print(e)
+    return value
+
+
+# get_fileSize
+def get_file_size(path, fname, unit='B'):
+    try:
+        spath = os.path.join(self.path, fname)
+        # spath = unicode(spath, 'utf8')
         unit = unit.upper()
-        fsize = os.path.getsize(fpath)      # get file size, unit is B
+        fsize = os.path.getsize(spath)      # get file size, unit is B
         if unit == 'B':
             return fsize
         elif unit == 'KB':
@@ -149,15 +159,36 @@ get file szie, return default szie unit is KB, rounded to 3 decimal places.
         elif unit == 'G':
             fsize = fsize/float(1024*1024*1024)
         else:
-            print "please input Correct [unit of measure]!!!!!!!"
+            print("Please Input Correct File Size Unit, include: B, KB, MB, G")
             return None
         return round(fsize, 3)
     except Exception as e:
-        print e
+        print(e)
         return None
 
+def get_file_time(path, fname, tattr='C'):
+    try:
+        spath = os.path.join(self.path, fname)
+        # spath = unicode(spath,'utf8')
+        tattr = tattr.upper()
+        if tattr == 'C':
+            ftime = os.path.getctime(spath)
+        elif tattr == 'M':
+            ftime = os.path.getmtime(spath)
+        elif tattr == 'A':
+            ftime = os.path.getatime(spath)
+        else:
+            print("Please Input Correct File Time Attr, include: C, M , A")
+            return None
+        return ftime
+    except Exception as e:
+        print(e)
+        return None
+
+
+
 def test_get_fileSize(fpath):
-    fileSize = get_fileSize(fpath, unit='kB')
+    fileSize = get_file_size(fpath, unit='kB')
     if fileSize:
         print "fileSize:  %.3f KB"%fileSize
 
@@ -166,7 +197,7 @@ def test():
     fpath = "../test_file/2222test.txt"
     test_get_fileSize(fpath)
 
-    fileList = get_fileList("../test_file", '.txt')
+    fileList = get_files("../test_file", '.txt')
     for file in fileList:
         print "file path: ", file
 
