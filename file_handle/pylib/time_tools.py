@@ -1,42 +1,62 @@
 # -*- encoding: utf-8-*-
-#================================================
-#  __title__ = 'time_fun'
-#  __author__ = 'tx'
-#  __mtime__ = '2017-12-08'
-#=================================================
+'''
+    @File    test  pylib.time_tools
+    @Author
+    @Created On 2017-12-08
+    @Updated On 2018-04-13
+'''
+# py3 = True if sys.version > '3' else False
+
 import os
 import sys
 import time
-import shutil
-
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
 
 g_iDEBUG = 1
 def DEBUG(*value):
     if g_iDEBUG == 1:
         t = time.strftime("%Y-%m-%d %H:%M:%S")
-        filename = sys.argv[0][sys.argv[0].rfind(os.sep)+1:]
-        print "[python][%s,%s]:" % (filename, t),
+        # filename = sys.argv[0][sys.argv[0].rfind(os.sep)+1:]
+        filename = os.path.splitext(os.path.basename(__file__))[0]
+        print "[python2.7][%s,%s]:" % (filename, t),
         for i in value:
             print i,
         print ""
 
-def TimeStampToTime(inTime):
+
+def TimeStampToTime(timebuf):
     '''把时间戳转化为时间: 1479264792 to 2016-11-16 10:53:12.'''
-    if inTime:
-        if isinstance(inTime, str) is True:
-            inTime = inTime.strip()[:11]
-            timestamp = int(inTime)
-        elif isinstance(inTime, (int, float))is True:
-            timestamp = inTime
+    if timebuf:
+        if isinstance(timebuf, str) is True:
+            timebuf = timebuf.strip()[:11]
+            timestamp = int(timebuf)
+        elif isinstance(timebuf, (int, float))is True:
+            timestamp = timebuf
         else:
             return None
-        timeStruct = time.localtime(int(timestamp))
-        return time.strftime('%Y-%m-%d %H:%M:%S', timeStruct)
+        timeStruct = time.localtime(int(timestamp))                 # step1: timestamp  to timeStruct
+        return time.strftime('%Y-%m-%d %H:%M:%S', timeStruct)       # step2: timeStruct to format_time
     else:
         return None
+
+
+def format_date(value):
+    if not value:
+        return None
+    time_value = value.strip()
+    try:
+        #根据指定的格式把一个时间字符串解析为时间元组
+        timeStruct = time.strptime(time_value, "%m %d, %Y")           # eg: "1 06, 2018"
+        # timeStruct = time.strptime(time_value, "%m %d, %y")         # eg: "1 06, 18"
+        # timeStruct = time.strptime(time_value, "%B %d, %Y")         # eg: "January 06, 2018"
+        # print timeStruct
+        timesf = time.strftime("%Y-%m-%d", timeStruct)
+        return timesf
+    except:
+        timesf = time.strftime("%Y-%m-%d", time.localtime())
+        return timesf
+
 
 def get_nowtime(tStamp=1):
     '''tStamp is 1, return now time by timeStamp.'''
@@ -47,22 +67,6 @@ def get_nowtime(tStamp=1):
         time_local  = time.localtime()      #类似gmtime()，作用是格式化时间戳为本地的时间。 如果sec参数未输入，则以当前时间为转换标准
         YMD = time.strftime("%Y-%m-%d", time_local)
         return YMD
-
-def format_date(value):
-    if not value:
-        return None
-    time_value = value.strip()
-    try:
-        # timesp = time.strptime(time_value, "%m/%d/%y")
-        # timesp = time.strptime(time_value, "%B %d, %Y")     #根据指定的格式把一个时间字符串解析为时间元组
-        timesp = time.strptime(time_value, "%B %d, %Y")
-        print timesp
-        timesf = time.strftime("%Y-%m-%d", timesp)
-        print timesf
-        return timesf
-    except:
-        timesf = time.strftime("%Y-%m-%d", time.localtime())
-        return timesf
 
 def get_fileTime(fpath, fAttr='C', tStamp=1):
     '''
@@ -91,17 +95,28 @@ if tStamp is 1, return timeStamp; else return formatDate.
         print e
         return None
 
-def test_get_fileCMAtime(fpath):
-    fileCTime = get_fileTime(fpath, fAttr='C')
-    fileMTime = get_fileTime(fpath, fAttr='M')
-    fileATime = get_fileTime(fpath, fAttr='A')
-    print "fileCTime: ", fileCTime, TimeStampToTime(fileCTime)
-    print "fileMTime: ", fileMTime, TimeStampToTime(fileMTime)
-    print "fileATime: ", fileATime, TimeStampToTime(fileATime)
 
-def test():
-    fpath = "../test_file/2222test.txt"
-    test_get_fileCMAtime(fpath)
+def tets_TimeStampToTime():
+    nowtime = time.time()
+    timep = TimeStampToTime(int(nowtime))
+    DEBUG("TimeStamp : ", nowtime)
+    DEBUG("PrettyTime: ", timep)
+
+
+def test_format_date():
+    timestr = "1 06, 2018"
+    timep   = format_date(timestr)
+    DEBUG("str    data: ", timestr)
+    DEBUG("format date: ", timep)
+
+
+def main():
+    # test TimeStampToTime
+    tets_TimeStampToTime()
+
+    # test format_date
+    test_format_date()
+
 
 if __name__ == '__main__':
-    test()
+    main()
