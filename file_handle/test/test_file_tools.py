@@ -34,7 +34,10 @@ class FiletoolsTest(object):
     def __init__(self, path, debug=1):
         global g_iDEBUG
         g_iDEBUG = debug
-        self.path = path
+
+        filerealpath = os.path.realpath(__file__)
+        filepath     = os.path.dirname(filerealpath)
+        self.path    = os.path.abspath(os.path.join(filepath, path))
 
 
     def test_get_files(self, tail=None):
@@ -49,6 +52,7 @@ class FiletoolsTest(object):
         finally:
             DEBUG("test_get_files end.\n")
 
+
     def test_rmfile(self, fname):
         counter = 5
         while isExsit(self.path, fname):
@@ -61,7 +65,9 @@ class FiletoolsTest(object):
                 continue
         DEBUG("test_rmfile end.\n")
 
+
     def test_cpfile(self, srcfpath, tarfpath):
+        # srcfpath1 = os.path.abspath(os.path.join(__file__, srcfpath))
         ret = cpfile(srcfpath, tarfpath)
         if not ret:
             DEBUG("File: [{}] cp to [] failed! ".format(srcfpath, tarfpath))
@@ -116,17 +122,14 @@ class FiletoolsTest(object):
 def main():
     start_time = time.time()
 
-    test_path = '../test_data/'
+    test_path = './test_data/'
     test_file = '2222test.txt'
 
     testObj = FiletoolsTest(test_path, debug=1)
 
     testObj.test_get_files()
 
-
-    testObj.test_rmfile(fname="__init__.pyc")
-
-    testObj.test_cpfile(srcfpath='../pylib/file_tools.py', tarfpath='./')
+    testObj.test_cpfile(srcfpath='../pylib/file_tools.py', tarfpath='./test_data/')
 
     # get_file_data, get_file_md5, write_date_2file
     testObj.test_some_fun(fname="2222test.txt")
@@ -134,6 +137,9 @@ def main():
     testObj.test_get_file_size(fname="2222test.txt", unit='B')
 
     testObj.test_get_file_time(fname="2222test.txt", tattr='C')
+
+    testObj.test_rmfile(fname="file_tools.py")
+    testObj.test_rmfile(fname="2222test.txt_bak")
 
     end_time = time.time()
     DEBUG("Test last time: ", (end_time-start_time))
