@@ -3,7 +3,7 @@
     @File        File Handle
     @Author      tx
     @CreatedDate 2018-04-02
-    @UpdatedDate 2018-04-12
+    @UpdatedDate 2018-04-13
 '''
 # py3 = True if sys.version > '3' else False
 import os
@@ -20,8 +20,9 @@ g_iDEBUG = 1
 def DEBUG(*value):
     if g_iDEBUG == 1:
         t = time.strftime("%Y-%m-%d %H:%M:%S")
-        filename = sys.argv[0][sys.argv[0].rfind(os.sep)+1:]
-        print "[python][%s,%s]:" % (filename, t),
+        # filename = sys.argv[0][sys.argv[0].rfind(os.sep)+1:]
+        filename = os.path.splitext(os.path.basename(__file__))[0]
+        print "[python2.7][%s,%s]:" % (filename, t),
         for i in value:
             print i,
         print ""
@@ -43,10 +44,10 @@ def get_files(path, tail=None):
                 files.append(fullpath)
         return files
     except Exception as e:
-        print(e)
+        DEBUG(e)
         return None
 
-def _isExsit(path, fname):
+def isExsit(path, fname):
     try:
         fullpath = os.path.join(path, fname)
         if not os.path.isfile(fullpath):
@@ -68,8 +69,6 @@ def rmfile(path, fname):
 def cpfile(srcfpath, tarfpath):
     try:
         import shutil
-        if not os.path.isfile(srcfpath):
-            print("File: [{}] Not exsit".format(srcfpath))
         shutil.copy(srcfpath, tarfpath)
         # os.system("cp -f {} {}".format(srcfpath, tarfpath))
         return True
@@ -95,7 +94,7 @@ def get_file_md5(path, fname, mode='1'):
         buf = get_file_data(path, fname, mode="rb")
         if not buf:
             print("File[%s] open failed."%fname)
-
+            return None
         if mode == '1':
             import md5
             md5Obj = md5.new()
@@ -117,9 +116,9 @@ def write_date_2file(path, fname, buf):
         fullpath = os.path.join(path, fname)
         with open(fullpath, "wb") as fp:
             fp.write(buf)
-        return True
+        return fullpath
     except Exception as e:
-        return False
+        return None
 
 
 # get_data
@@ -146,7 +145,7 @@ def get_symbol_value(buf, head_sym='', tail_sym=''):
 # get_fileSize
 def get_file_size(path, fname, unit='B'):
     try:
-        spath = os.path.join(self.path, fname)
+        spath = os.path.join(path, fname)
         # spath = unicode(spath, 'utf8')
         unit = unit.upper()
         fsize = os.path.getsize(spath)      # get file size, unit is B
@@ -168,7 +167,7 @@ def get_file_size(path, fname, unit='B'):
 
 def get_file_time(path, fname, tattr='C'):
     try:
-        spath = os.path.join(self.path, fname)
+        spath = os.path.join(path, fname)
         # spath = unicode(spath,'utf8')
         tattr = tattr.upper()
         if tattr == 'C':
@@ -186,21 +185,10 @@ def get_file_time(path, fname, tattr='C'):
         return None
 
 
-
-def test_get_fileSize(fpath):
-    fileSize = get_file_size(fpath, unit='kB')
-    if fileSize:
-        print "fileSize:  %.3f KB"%fileSize
-
-
 def test():
-    fpath = "../test_file/2222test.txt"
-    test_get_fileSize(fpath)
-
-    fileList = get_files("../test_file", '.txt')
+    fileList = get_files("../", '.py')
     for file in fileList:
-        print "file path: ", file
-
+        DEBUG("file path: ", file)
 
 if __name__ == '__main__':
     test()
