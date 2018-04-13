@@ -50,10 +50,10 @@ def format_date(value):
         timeStruct = time.strptime(time_value, "%m %d, %Y")           # eg: "1 06, 2018"
         # timeStruct = time.strptime(time_value, "%m %d, %y")         # eg: "1 06, 18"
         # timeStruct = time.strptime(time_value, "%B %d, %Y")         # eg: "January 06, 2018"
-        # print timeStruct
+        # print(timeStruct)
         timesf = time.strftime("%Y-%m-%d", timeStruct)
         return timesf
-    except:
+    except Exception as e:
         timesf = time.strftime("%Y-%m-%d", time.localtime())
         return timesf
 
@@ -85,14 +85,14 @@ if tStamp is 1, return timeStamp; else return formatDate.
         elif fAttr == 'A':
             t = os.path.getatime(fpath)
         else:
-            print "please input file time of fAttr: c, m , a"
+            print("Please Input Correct File Time Attr, include: C, M , A")
             return None
         if int(tStamp) == 1:
             return t
         else:
             return TimeStampToTime(t)
     except Exception as e:
-        print e
+        print(e)
         return None
 
 
