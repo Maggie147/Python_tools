@@ -88,6 +88,19 @@ def get_file_data(path, fname, mode="rb"):
         return False
 
 
+def _while_read_write_test(srcfpath, tarfpath):
+    try:
+        fsize = get_file_size()
+        with open(srcfpath, 'rb') as f_in, open(tarfpath, 'wb') as f_out:
+            for x in range(1, fsize, 1):
+                content = f_in.read(1024)
+                f_out.write(content)
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+
 def get_file_md5(path, fname, mode='1'):
     try:
         # 需要使用二进制格式读取文件内容
@@ -143,9 +156,9 @@ def get_symbol_value(buf, head_sym='', tail_sym=''):
 
 
 # get_fileSize
-def get_file_size(path, fname, unit='B'):
+def get_file_size(spath, unit='B'):
     try:
-        spath = os.path.join(path, fname)
+        # spath = os.path.join(path, fname)
         # spath = unicode(spath, 'utf8')
         unit = unit.upper()
         fsize = os.path.getsize(spath)      # get file size, unit is B
@@ -165,9 +178,9 @@ def get_file_size(path, fname, unit='B'):
         print(e)
         return None
 
-def get_file_time(path, fname, tattr='C'):
+def get_file_time(spath, tattr='C'):
     try:
-        spath = os.path.join(path, fname)
+        # spath = os.path.join(path, fname)
         # spath = unicode(spath,'utf8')
         tattr = tattr.upper()
         if tattr == 'C':
