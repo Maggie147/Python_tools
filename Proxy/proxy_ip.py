@@ -6,7 +6,7 @@ import json
 from multiprocessing.dummy import Pool
 
 
-class proxyIPCheck(object):
+class ProxyIPCheck(object):
     def __init__(self):
         self.proxy_addr = "http://www.gatherproxy.com/zh/"
         self.proxy_addr_xici = "http://www.xicidaili.com/nn/1"
@@ -89,23 +89,23 @@ class proxyIPCheck(object):
 
 
 def main():
-    p = proxyIPCheck()
+    pObj = ProxyIPCheck()
 
     print("Gets ip list...")
-    # proxyinfo = p.proxyIPGet()
-    proxyinfo = p.proxyIPGet_XiciDaili()       # 西刺代理
+    # proxyinfo = pObj.proxyIPGet()
+    proxyinfo = pObj.proxyIPGet_XiciDaili()       # 西刺代理
 
-    print("Check ip...")
-    if len(proxyinfo) <1:
+    print("Check ip alive...")
+    if len(proxyinfo) < 1:
         print("proxyIPGet failed!!")
-        return
+        sys.exit(1)
+    else:
+        ips = pObj.validIPGet(proxyinfo)
 
-    ips = p.validIPGet(proxyinfo)
-
-    print("Save to proxyip.txt")
-    ret = p.saveIP(ips, './proxy_file/', 'proxyip.txt')
-    if not ret:
-        print("Save to ./proxy_file/proxyip.txt failed!!!")
+        print("Save to proxyip.txt")
+        ret = pObj.saveIP(ips, './proxy_file/', 'proxyip.txt')
+        if not ret:
+            print("Save to ./proxy_file/proxyip.txt failed!!!")
 
 
 if __name__ == "__main__":
