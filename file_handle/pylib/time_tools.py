@@ -10,6 +10,7 @@
 import os
 import sys
 import time
+import math
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -94,8 +95,43 @@ if tStamp is 1, return timeStamp; else return formatDate.
     except Exception as e:
         print(e)
         return None
+    
+    
+def get_ids(data, septor=','):
+    ids = list()
+    if not data:
+        return ids
+    ids_tmp = data.replace(' ', '').strip()
+    spt = septor.strip()
+    if ids_tmp:
+        if spt in ids_tmp:
+            if ids_tmp[-1] == spt:
+                ids_list_tmp = ids_tmp.split(spt)[0:-1]  # 最后还有',' 则需要切片[0:-1];
+            else:
+                ids_list_tmp = ids_tmp.split(spt)
+            ids_list = [i.strip() for i in ids_list_tmp if i]
+            ids.extend(ids_list)
+        else:
+            ids.append(ids_tmp)
+    return ids
 
 
+def change_time(full_time):
+    day = 24*60*60
+    hour = 60*60
+    min = 60
+    if full_time < 60:
+        return "%d sec" % math.ceil(full_time)
+    elif full_time > day:
+        days = divmod(full_time, day)
+        return "%d days, %s" % (int(days[0]), change_time(days[1]))
+    elif full_time > hour:
+        hours = divmod(full_time, hour)
+        return '%d hours, %s' % (int(hours[0]), change_time(hours[1]))
+    else:
+        mins = divmod(full_time, min)
+        return "%d mins, %d sec" % (int(mins[0]), math.ceil(mins[1]))
+    
 def tets_TimeStampToTime():
     nowtime = time.time()
     timep = TimeStampToTime(int(nowtime))
